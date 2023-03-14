@@ -2,6 +2,7 @@ package com.example.demo.domain.shop.controller;
 
 import com.example.demo.domain.fileTest.controller.request.RequestFileInfo;
 import com.example.demo.domain.shop.controller.request.ShopRequest;
+import com.example.demo.domain.shop.controller.response.ImageDataResponse;
 import com.example.demo.domain.shop.entity.Product;
 import com.example.demo.domain.shop.service.ShopService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,16 +34,12 @@ public class ShopController {
             @RequestParam("price") Integer price,
             @RequestPart(value = "fileList") List<MultipartFile> fileList) throws IOException {
 
-        try {            for (MultipartFile multipartFile: fileList) {
+        try {
+            for (MultipartFile multipartFile: fileList) {
                 log.info("requestFileUploadWithText() - filename: " + multipartFile.getOriginalFilename());
 
-                final String directory =
-
-                        "../../../KHGPM-Frontend/JongInHan/frontend/src/assets/productImages/";
-
-                FileOutputStream writer = new FileOutputStream( directory
-                         +
-                                multipartFile.getOriginalFilename()
+                FileOutputStream writer = new FileOutputStream(
+                        "../../../KHGPM-Frontend/JongInHan/frontend/src/assets/productImages/" + multipartFile.getOriginalFilename()
                 );
 
                 writer.write(multipartFile.getBytes());
@@ -65,7 +62,13 @@ public class ShopController {
     public List<Product> productList () {
         log.info("productList()");
 
+        List<Product> products = shopService.list();
+        for (Product product : products) {
+            shopService.findAllImagesByProductId(product.getProductId());
+//            for (ImageDataResponse imageDataResponse : imageDataResponses) {
+//            }
+        }
+
         return shopService.list();
     }
-
 }

@@ -1,8 +1,10 @@
 package com.example.demo.domain.shop.service;
 
 import com.example.demo.domain.shop.controller.request.ShopRequest;
+import com.example.demo.domain.shop.controller.response.ImageDataResponse;
 import com.example.demo.domain.shop.entity.ImageData;
 import com.example.demo.domain.shop.entity.Product;
+import com.example.demo.domain.shop.repository.ImageDataRepository;
 import com.example.demo.domain.shop.repository.ShopRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -11,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -18,8 +21,11 @@ import java.util.List;
 public class ShopServiceImpl implements ShopService{
     final private ShopRepository shopRepository;
 
-    public ShopServiceImpl(ShopRepository shopRepository) {
+    final private ImageDataRepository imageDataRepository;
+
+    public ShopServiceImpl(ShopRepository shopRepository, ImageDataRepository imageDataRepository) {
         this.shopRepository = shopRepository;
+        this.imageDataRepository = imageDataRepository;
     }
 
     public String register(ShopRequest shopRequest) throws IOException {
@@ -50,5 +56,17 @@ public class ShopServiceImpl implements ShopService{
     @Override
     public List<Product> list() {
         return shopRepository.findAll(Sort.by(Sort.Direction.DESC, "productId"));
+    }
+
+    @Override
+    public List<ImageDataResponse> findAllImagesByProductId(Long productId) {
+        List<ImageData> imageDataList = imageDataRepository.findAllImagesByProductId(productId);
+        List<ImageDataResponse> imageDataResponses = new ArrayList<>();
+
+        for (ImageData imageData : imageDataList) {
+            imageDataResponses.add(new ImageDataResponse((imageData.getImageData())));
+        }
+
+        return imageDataResponses;
     }
 }
