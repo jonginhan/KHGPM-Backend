@@ -3,6 +3,8 @@ package com.example.demo.domain.shop.controller;
 import com.example.demo.domain.fileTest.controller.request.RequestFileInfo;
 import com.example.demo.domain.shop.controller.request.ShopRequest;
 import com.example.demo.domain.shop.controller.response.ImageDataResponse;
+import com.example.demo.domain.shop.controller.response.ProductResponse;
+import com.example.demo.domain.shop.entity.ImageData;
 import com.example.demo.domain.shop.entity.Product;
 import com.example.demo.domain.shop.service.ShopService;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -59,16 +63,27 @@ public class ShopController {
     }
 
     @GetMapping("/list")
-    public List<Product> productList () {
+    public List<ProductResponse> productList () {
+
         log.info("productList()");
 
+        List<ProductResponse> productResponses = new ArrayList<>();
         List<Product> products = shopService.list();
-        for (Product product : products) {
-            shopService.findAllImagesByProductId(product.getProductId());
-//            for (ImageDataResponse imageDataResponse : imageDataResponses) {
-//            }
-        }
 
-        return shopService.list();
+        for (Product product : products) {
+            List<ImageDataResponse> imageDataResponses = shopService.findAllImagesByProductId(product.getProductId());
+            List<String> imageDataList = imageDataResponses.stream()
+                    .map(ImageDataResponse::getImageData)
+                    .collect(Collectors.toList());
+
+            ProductResponse productResponse = new ProductResponse(
+                    product.getName(),
+                    product.getDescription(),
+                    product.getPrice(),
+                    imageDataList
+            );
+            productResponses.add(productResponse);
+        }
+        return productResponses;
     }
 }

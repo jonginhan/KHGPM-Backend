@@ -1,5 +1,6 @@
 package com.example.demo.domain.shop.entity;
 
+import com.example.demo.domain.shop.controller.response.ImageDataResponse;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -41,6 +42,18 @@ public class Product {
         imageData.setProduct(this);
         imageDataList.add(imageData);
     }
+
+//    public void setImageDataList(List<String> imageDataList) {
+//        this.imageDataList.clear(); // Remove any existing imageData objects
+//        if (imageDataList != null) {
+//            for (String imageData : imageDataList) {
+//                ImageData imageDataObject = new ImageData();
+//                imageDataObject.setImageData(imageData);
+//                imageDataObject.setProduct(this);
+//                this.imageDataList.add(imageDataObject);
+//            }
+//        }
+//    }
 
 }
 

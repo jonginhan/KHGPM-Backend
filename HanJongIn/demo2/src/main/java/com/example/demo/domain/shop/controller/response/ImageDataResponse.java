@@ -4,8 +4,8 @@ import lombok.Data;
 import lombok.Getter;
 
 @Data
-@Getter
 public class ImageDataResponse {
+
     private String imageData;
 
     public ImageDataResponse(String imageData) {

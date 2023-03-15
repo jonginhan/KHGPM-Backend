@@ -68,5 +68,6 @@ public class ShopServiceImpl implements ShopService{
         }
 
         return imageDataResponses;
+//        return imageDataList;
     }
 }
