@@ -16,7 +16,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/product")
-@CrossOrigin(origins = "http://localhost:8080", allowedHeaders = "*")
 public class ProductController {
 
     final private ProductService productService;
@@ -33,7 +32,7 @@ public class ProductController {
 
     @GetMapping("/list")
     public List<ProductListResponse> productList () {
-        log.info("boardList()");
+        log.info("productList()");
 
         return productService.list();
     }
@@ -52,13 +51,16 @@ public class ProductController {
         productService.remove(productId);
     }
 
-    @PutMapping("/{productId}")
+    @PutMapping(value = "/{productId}",
+            consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
     public Product productModify(@PathVariable("productId") Long productId,
-                             @RequestBody ProductRequest productRequest) {
+                                 @RequestPart(value = "imageFileList") List<MultipartFile> imageFileList,
+                                 @RequestPart(value = "productInfo") RequestProductInfo productRequest) {
+                             //@RequestBody ProductRequest productRequest) {
 
         log.info("productModify(): " + productRequest + "id: " + productId);
 
-        return productService.modify(productId, productRequest);
+        return productService.modify(productId, imageFileList, productRequest);
     }
 
     @GetMapping("/imageList/{productId}")
@@ -68,5 +70,12 @@ public class ProductController {
         log.info("readProductImageResource(): " + productId);
 
         return productService.findProductImage(productId);
+    }
+
+    @GetMapping("/all")
+    public List<AllProductResponse> allProductList () {
+        log.info("allProductList()");
+
+        return productService.all();
     }
 }

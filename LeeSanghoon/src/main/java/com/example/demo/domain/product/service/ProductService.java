@@ -18,7 +18,11 @@ public interface ProductService {
 
     void remove(Long productId);
 
-    Product modify(Long productId, ProductRequest productRequest);
+    Product modify(Long productId,
+                   List<MultipartFile> imageFileList,
+                   RequestProductInfo productRequest);
 
     List<ImageResourceResponse> findProductImage(Long productId);
+
+    List<AllProductResponse> all();
 }
